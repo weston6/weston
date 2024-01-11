@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <meta name="description" content="Emacs lisp tutorial “M(Alt)-x” 输入ielm, 调出emacs shell &#34;C-x C-e&#34; 验证代码 Conventions (1).Some Terms “the Lisp reader” and “the Lisp printer” 指的是Lisp中将Lisp对象的文本表示转换为实际 Lisp对象的例程. (2).nil and t &#34;nil&#34; 有两种含意: 空 和 false 。而且 &#39;() 和 nil 是相同的。 &#34;t&#34; 表示 true (3).Evaluation Notation 评估符号以“⇒ ”表示结果
+(car &#39;(1 2)) ⇒ 1 评估符号 ”≡“ 表示完全等效
+(make-sparse-keymap) ≡ (list &#39;keymap) (4).Printing Notation 在示例的右括号后键入 C-j ，则打印文本将插入缓冲区。
+(progn (prin1 &#39;foo) (princ &#34;\n&#34;) (prin1 &#39;bar)) -|foo -|bar (5).Error Messages 1.">  
+
+  <title>
+    
+      lisp_tutorial
+    
+  </title>
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/" />
+  
+  
+  
+  <link rel="stylesheet" href="/css/main.c5af9bae99b4a3d315b9f39305ffff27e9c3383fbbfd8b5fcaf2237667021a333a982fb958d1813a720b0a660b14022337553ae1ca93ef2ee17c4ae628ac19cb.css" integrity="sha512-xa&#43;brpm0o9MVufOTBf//J&#43;nDOD&#43;7/YtfyvIjdmcCGjM6mC&#43;5WNGBOnILCmYLFAIjN1U64cqT7y7hfErmKKwZyw==" />
+  
+</head>
+<body a="auto">
+        <main class="page-content" aria-label="Content">
+            <div class="w">
+<a href="/">..</a>
+
+
+<article>
+    <p class="post-meta">
+        <time datetime="0001-01-01 00:00:00 &#43;0000 UTC">
+            0001-01-01
+        </time>
+    </p>
+
+    <h1>lisp_tutorial</h1>
+
+    
+
+    
+<div id="outline-container-headline-1" class="outline-2">
+<h2 id="headline-1">
+Emacs lisp tutorial
+</h2>
+<div id="outline-text-headline-1" class="outline-text-2">
+<ul>
+<li>“M(<strong>Alt</strong>)-x” 输入ielm, 调出emacs shell</li>
+<li>&#34;C-x C-e&#34; 验证代码</li>
+</ul>
+<div id="outline-container-headline-2" class="outline-3">
+<h3 id="headline-2">
+Conventions
+</h3>
+<div id="outline-text-headline-2" class="outline-text-3">
+<div id="outline-container-headline-3" class="outline-4">
+<h4 id="headline-3">
+(1).Some Terms
+</h4>
+<div id="outline-text-headline-3" class="outline-text-4">
+<ol>
+<li><em>“the Lisp reader”</em> and <em>“the Lisp printer”</em> 指的是Lisp中将Lisp对象的文本表示转换为实际
+Lisp对象的例程.</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-headline-4" class="outline-4">
+<h4 id="headline-4">
+(2).nil and t
+</h4>
+<div id="outline-text-headline-4" class="outline-text-4">
+<ol>
+<li>&#34;<em>nil&#34;</em> 有两种含意: <span style="text-decoration: underline;">空</span> 和 <span style="text-decoration: underline;">false</span> 。而且 <strong>&#39;()</strong> 和 <strong>nil</strong> 是相同的。</li>
+<li>&#34;<em>t</em>&#34; 表示 <span style="text-decoration: underline;">true</span></li>
+</ol>
+</div>
+</div>
+<div id="outline-container-headline-5" class="outline-4">
+<h4 id="headline-5">
+(3).Evaluation Notation
+</h4>
+<div id="outline-text-headline-5" class="outline-text-4">
+<ol>
+<li>
+<p>评估符号以“⇒ ”表示结果</p>
+<div class="src src-lisp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(<span style="color:#a6e22e">car</span> <span style="color:#f92672">&#39;</span>(<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span>))
+</span></span><span style="display:flex;"><span>     <span style="color:#960050;background-color:#1e0010">⇒</span> 1</span></span></code></pre></div>
+</div>
+</li>
+<li>
+<p>评估符号 ”≡“ 表示完全等效</p>
+<div class="src src-lisp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>(make-sparse-keymap)  <span style="color:#960050;background-color:#1e0010">≡</span> (<span style="color:#a6e22e">list</span> <span style="color:#e6db74">&#39;keymap</span>)</span></span></code></pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-headline-6" class="outline-4">
+<h4 id="headline-6">
+(4).Printing Notation
+</h4>
+<div id="outline-text-headline-6" class="outline-text-4">
+<ol>
+<li>
+<p>在示例的右括号后键入 C-j ，则打印文本将插入缓冲区。</p>
+<div class="src src-lisp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>  (<span style="color:#66d9ef">progn</span> (<span style="color:#a6e22e">prin1</span> <span style="color:#e6db74">&#39;foo</span>) (<span style="color:#a6e22e">princ</span> <span style="color:#e6db74">&#34;\n&#34;</span>) (<span style="color:#a6e22e">prin1</span> <span style="color:#e6db74">&#39;bar</span>))
+</span></span><span style="display:flex;"><span>   <span style="color:#a6e22e">-</span>|foo
+</span></span><span style="display:flex;"><span>   -|bar</span></span></code></pre></div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-headline-7" class="outline-4">
+<h4 id="headline-7">
+(5).Error Messages
+</h4>
+<div id="outline-text-headline-7" class="outline-text-4">
+<p>1.一些例子信号错误。这通常会在回显区域显示错误消息。我们在以&#39; error→ &#39;开头的行上显示
+    错误消息。请注意，&#39; error→ &#39;本身不会出现在回显区域中。</p>
+<div class="src src-lisp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>  (<span style="color:#a6e22e">+</span> <span style="color:#ae81ff">23</span> <span style="color:#e6db74">&#39;x</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">error</span><span style="color:#960050;background-color:#1e0010">→</span> Wrong <span style="color:#66d9ef">type</span> argument: number-or-marker-p, x</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="outline-container-headline-8" class="outline-4">
+<h4 id="headline-8">
+(6).Version Information
+</h4>
+<div id="outline-text-headline-8" class="outline-text-4">
+<table>
+<tbody>
+<tr>
+<td>变量</td>
+<td>解释</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-build-time</td>
+<td>这个变量的值表示Emacs构建的时间。它使用 current-time 的样</td>
+</tr>
+<tr>
+<td></td>
+<td>信式 （请参阅时间），如不可用，则为 nil。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-version</td>
+<td>这个变量的值是正在运行的Emacs的版本。它是一个字符串，例如 &#34;26.1&#34;。</td>
+</tr>
+<tr>
+<td></td>
+<td>具有三个数字分量的值（如 &#34;26.0.91&#34; ）表示未发布的 测试版本。</td>
+</tr>
+<tr>
+<td></td>
+<td>（在Emacs 26.1之前，字符串包含一个额外的final组件，其中包含现在</td>
+</tr>
+<tr>
+<td></td>
+<td>存储在 emacs-build-number中的整数;例如， &#34;25.1.1&#34; .）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-major-version</td>
+<td>Emacs的主版本号，作为整数。对于Emacs 23.1版本，该值为23。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-minor-version</td>
+<td>Emacs的次要版本号，作为整数。对于Emacs版本23.1，该值为1。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-build-number</td>
+<td>一个整数，每次在同一个目录中构建Emacs时递增（没有清理),</td>
+</tr>
+<tr>
+<td></td>
+<td>这只适用于开发Emacs。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-repository-version</td>
+<td>一个字符串，它给出了构建Emacs的存储库版本号。</td>
+</tr>
+<tr>
+<td></td>
+<td>如果Emacs是在版本控制之外构建的，则值为 nil 。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>emacs-repository-branch</td>
+<td>一个字符串，它给出了构建Emacs的存储库分支。在大多数情况下，</td>
+</tr>
+<tr>
+<td></td>
+<td>这是 &#34;master&#34; 。如果Emacs是在版本控制之外构建的，则值为 nil</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="outline-container-headline-9" class="outline-4">
+<h4 id="headline-9">
+(7).Comment
+</h4>
+<div id="outline-text-headline-9" class="outline-text-4">
+<ul>
+<li>&#34;;&#34;表示注释</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-headline-10" class="outline-4">
+<h4 id="headline-10">
+(8) Special Read Syntax
+</h4>
+<div id="outline-text-headline-10" class="outline-text-4">
+<table>
+<tbody>
+<tr>
+<td>符号</td>
+<td>解释</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#&lt;…&gt;</td>
+<td>没有读语法的对象是这样呈现的（参见打印表示和读表示</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>##</td>
+<td>名称为空字符串的内部符号的打印表示形式（请参见符号类型)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#&#39;</td>
+<td>这是 function 的快捷方式，请参阅匿名函数</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#:</td>
+<td>名称为foo的未内置符号的打印表示为&#39; #:foo &#39;（请参阅符号类型）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#N</td>
+<td>当打印循环结构时，此构造用于表示结构循环回自身的位置，&#39; N &#39;是起始列表计数</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#N= 和 #N#</td>
+<td>#N= &#39;为对象提供名称，&#39; #N# &#39;表示该对象，因此当阅读回对象时，它们将是相同的对象，</td>
+</tr>
+<tr>
+<td></td>
+<td>而不是副本（请参见循环对象的读取命令）。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#xN</td>
+<td>“ N ”表示为十六进制数（“ #x2a ”）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#oN</td>
+<td>“ N ”表示为八进制数（“ #o52 ”)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#bN</td>
+<td>“ N ”表示为二进制数（“ #b101010 ”)</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#(…)</td>
+<td>字符串文本属性（请参见字符串中的文本属性）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#^</td>
+<td>一个字符表（参见Char-Table Type）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#s(hash-table …)</td>
+<td>哈希表（Hash Table）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>?C</td>
+<td>一个字符（参见基本字符）</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#$</td>
+<td>字节编译文件中的当前文件名(请参见文档字符串和编译).这并不意味着在Emacs Lisp</td>
+</tr>
+<tr>
+<td></td>
+<td>源文件中使用</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#@N</td>
+<td>跳过下一个&#39; N &#39;字符（参见注释）。这是在字节编译文件中使用的，</td>
+</tr>
+<tr>
+<td></td>
+<td>并不意味着在Emacs Lisp源文件中使用</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>#f</td>
+<td>表示下面的表单不能被Emacs Lisp阅读器读取。这只是为了显示目的而</td>
+</tr>
+<tr>
+<td></td>
+<td>在文本中（当它看起来比指示不可读形式的其他方法更漂亮时）,</td>
+</tr>
+<tr>
+<td></td>
+<td>并且永远不会出现在任何Lisp文件中。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-headline-11" class="outline-3">
+<h3 id="headline-11">
+Programming Data Types
+</h3>
+<div id="outline-text-headline-11" class="outline-text-3">
+<div id="outline-container-headline-12" class="outline-4">
+<h4 id="headline-12">
+(1)Integer
+</h4>
+<div id="outline-text-headline-12" class="outline-text-4">
+<div class="src src-lisp">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-lisp" data-lang="lisp"><span style="display:flex;"><span>  <span style="color:#75715e">;; Decimal number</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">1</span>  <span style="color:#75715e">;; integer 1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">1.</span> <span style="color:#75715e">;; integer 1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">+1</span> <span style="color:#75715e">;; integer 1 too</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">-1</span> <span style="color:#75715e">;; integer -1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">0</span>  <span style="color:#75715e">;; integer 0</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">-0</span> <span style="color:#75715e">;; integer -0</span></span></span></code></pre></div>
+</div>
+<ul>
+<li><span style="text-decoration: underline;">文本</span> 字符由整数表示(<em>The text characters are represented by integers</em>)</li>
+<li>整数不受机器字大小的 <span style="text-decoration: underline;"><span style="text-decoration: underline;">限制</span></span> (<em>Emacs Lisp are not limited to the machine word size</em>):: <strong>两
+ 种整数</strong> :较小的整数，称为 <em>fixnums</em> ，和较大的整数，称为 <em>bignums</em> 。</li>
+</ul>
+<table>
+<tbody>
+<tr>
+<td>整数</td>
+<td>解释</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>bignum</td>
+<td>取值范围受主存容量、机器特性（如用于表示bignum指数的字的大小）</td>
+</tr>
+<tr>
+<td></td>
+<td>以及integer-width 变量的限制 。这些限制通常比固定数的限制宽松</td>
+</tr>
+<tr>
+<td></td>
+<td>得多。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>fixnumi</td>
+<td>的值范围取决于机器。最小范围是− 536，870，912到536，870，911i</td>
+</tr>
+<tr>
+<td></td>
+<td>（30位;即，−2**29至2**29 − 1),但许多机器提供更宽的范围.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>variable</li>
+</ul>
+<table>
+<tbody>
+<tr>
+<td>变量</td>
+<td>解释</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>most-positive-fixnum</td>
+<td>这个变量的值是Emacs Lisp可以处理的最大“小”整数。</td>
+</tr>
+<tr>
+<td></td>
+<td>32位平台上的典型值为2**29 − 1</td>
+</tr>
+<tr>
+<td></td>
+<td>64位平台上的典型值为2**61 − 1</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>most-negative-fixnum</td>
+<td>这个变量的值是Emacs Lisp可以处理的数值最小的“小”整数。是阴性的。</td>
+</tr>
+<tr>
+<td></td>
+<td>32位平台上的典型值为−2**29.</td>
+</tr>
+<tr>
+<td></td>
+<td>64位平台上的典型值为−2**61。</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>integer-width</td>
+<td>此变量的值是一个非负整数，它控制Emacs在计算大整数时是否发出范围错误信号。</td>
+</tr>
+<tr>
+<td></td>
+<td>绝对值小于2**n的整数，其中n是此变量的值，不表示范围错误.尝试创建更大的整数通常表示</td>
+</tr>
+<tr>
+<td></td>
+<td>范围错误，尽管如果可以便宜地 创建更大的整数，则可能没有信号。如果计算创建了巨大的整</td>
+</tr>
+<tr>
+<td></td>
+<td>数，则将此变量设置为较大的数字可能会产生很大 的成本.</td>
+</tr>
+</tbody>
+</table>
+<div id="outline-container-headline-13" class="outline-5">
+<h5 id="headline-13">
+(2)Float Point
+</h5>
+<div id="outline-text-headline-13" class="outline-text-5">
+<ol>
+<li>浮点数用于表示 <span style="text-decoration: underline;"><span style="text-decoration: underline;">非整数</span></span> 的数字。</li>
+<li>浮点数的范围与您正在使用的计算机上的 <code class="verbatim">C数据类型double</code> 的范围相同。</li>
+<li>浮点数的读取语法需要 <strong>小数点和/或指数</strong> 。可选符号（“ + ”或“ - ”）位于数字及其指数之前。
+例如， <code>1500.0</code> 、 <code>+15e2</code> ,~15.0e+2~ , <code>+1500000e-3</code>  和 <code>.15e4</code> 是写入值为 <span style="text-decoration: underline;">_1500</span> 的浮点数的
+五种方式。它们都是等价的。与 <span style="text-decoration: underline;"><span style="text-decoration: underline;">Common Lisp</span></span> 类似，Emacs Lisp要求在没有指数的浮点数中小
+数点后至少有一个数字; <code>&#39;1500.&#39;</code> 是整数，而不是浮点数。 </li>
+<li>Emacs Lisp将 -0.0 视为在数值上等于普通零的数值比较，如 = 。这遵循IEEE浮点标准，即 -0.0
+和 0.0 在数值上相等，即使其他操作可以区分它们。</li>
+</ol>
+<p>5.special floating-point values</p>
+<table>
+<thead>
+<tr>
+<th>特殊浮点值</th>
+<th>语法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>infinity</td>
+<td>‘1.0e+INF’ and ‘-1.0e+INF’</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>not-a-number</td>
+<td>‘0.0e+NaN’ and ‘-0.0e+NaN’</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td>Function: isnan x</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td>Function: frexp x</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td>Function: ldexp s e</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td>Function: copysign x1 x2</td>
+</tr>
+</tbody>
+</table>
+<table>
+<tbody>
+<tr>
+<td>Function: logb x</td>
+<td class="align-right"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</article>
+
+            </div>
+        </main>
+    </body></html>
+
